@@ -6,6 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface HealthStatus {
-  status: string;
-}
+export type ListProvidersParams = {
+trade?: string;
+location?: string;
+q?: string;
+limit?: number;
+offset?: number;
+};

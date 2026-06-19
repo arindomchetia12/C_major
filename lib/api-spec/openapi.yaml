@@ -1,22 +1,31 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Local Leads API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: providers
+    description: Tradesperson provider operations
+  - name: portfolio
+    description: Portfolio/work photo operations
+  - name: reviews
+    description: Review operations
+  - name: ai
+    description: AI-powered features
+  - name: stats
+    description: Directory statistics
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +33,280 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /providers:
+    get:
+      operationId: listProviders
+      tags: [providers]
+      summary: List providers with optional filters
+      parameters:
+        - name: trade
+          in: query
+          schema:
+            type: string
+        - name: location
+          in: query
+          schema:
+            type: string
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Provider"
+    post:
+      operationId: createProvider
+      tags: [providers]
+      summary: Create a new provider profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProviderInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Provider"
+
+  /providers/{id}:
+    get:
+      operationId: getProvider
+      tags: [providers]
+      summary: Get a single provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Provider details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderDetail"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateProvider
+      tags: [providers]
+      summary: Update a provider profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProviderUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Provider"
+    delete:
+      operationId: deleteProvider
+      tags: [providers]
+      summary: Delete a provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /providers/{id}/portfolio:
+    get:
+      operationId: listPortfolio
+      tags: [portfolio]
+      summary: List a provider's portfolio items
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Portfolio items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PortfolioItem"
+    post:
+      operationId: addPortfolioItem
+      tags: [portfolio]
+      summary: Add a portfolio item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PortfolioItemInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioItem"
+
+  /providers/{id}/portfolio/{itemId}:
+    delete:
+      operationId: deletePortfolioItem
+      tags: [portfolio]
+      summary: Delete a portfolio item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /providers/{id}/reviews:
+    get:
+      operationId: listReviews
+      tags: [reviews]
+      summary: List reviews for a provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Submit a review for a provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+
+  /providers/{id}/generate-description:
+    post:
+      operationId: generateDescription
+      tags: [ai]
+      summary: AI-generate a professional bio/description for a provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateDescriptionRequest"
+      responses:
+        "200":
+          description: Generated description
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratedDescription"
+
+  /stats:
+    get:
+      operationId: getStats
+      tags: [stats]
+      summary: Get directory-wide statistics
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DirectoryStats"
+
+  /trades:
+    get:
+      operationId: listTrades
+      tags: [stats]
+      summary: List all available trade types with provider counts
+      responses:
+        "200":
+          description: Trade list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TradeSummary"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +317,230 @@ components:
       required:
         - status
 
+    Provider:
+      type: object
+      required: [id, name, trade, city, state, bio, phone, averageRating, reviewCount, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        trade:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        bio:
+          type: string
+        phone:
+          type: string
+        email:
+          type: ["string", "null"]
+        avatarUrl:
+          type: ["string", "null"]
+        yearsExperience:
+          type: ["integer", "null"]
+        hourlyRate:
+          type: ["number", "null"]
+        isVerified:
+          type: boolean
+        averageRating:
+          type: number
+        reviewCount:
+          type: integer
+        createdAt:
+          type: string
+
+    ProviderDetail:
+      type: object
+      required: [id, name, trade, city, state, bio, phone, averageRating, reviewCount, createdAt, portfolio, reviews]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        trade:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        bio:
+          type: string
+        phone:
+          type: string
+        email:
+          type: ["string", "null"]
+        avatarUrl:
+          type: ["string", "null"]
+        yearsExperience:
+          type: ["integer", "null"]
+        hourlyRate:
+          type: ["number", "null"]
+        isVerified:
+          type: boolean
+        averageRating:
+          type: number
+        reviewCount:
+          type: integer
+        createdAt:
+          type: string
+        portfolio:
+          type: array
+          items:
+            $ref: "#/components/schemas/PortfolioItem"
+        reviews:
+          type: array
+          items:
+            $ref: "#/components/schemas/Review"
+
+    ProviderInput:
+      type: object
+      required: [name, trade, city, state, bio, phone]
+      properties:
+        name:
+          type: string
+          minLength: 2
+        trade:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        bio:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        avatarUrl:
+          type: string
+        yearsExperience:
+          type: integer
+        hourlyRate:
+          type: number
+
+    ProviderUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        trade:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        bio:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        avatarUrl:
+          type: string
+        yearsExperience:
+          type: integer
+        hourlyRate:
+          type: number
+
+    PortfolioItem:
+      type: object
+      required: [id, providerId, imageUrl, caption, createdAt]
+      properties:
+        id:
+          type: integer
+        providerId:
+          type: integer
+        imageUrl:
+          type: string
+        caption:
+          type: string
+        createdAt:
+          type: string
+
+    PortfolioItemInput:
+      type: object
+      required: [imageUrl, caption]
+      properties:
+        imageUrl:
+          type: string
+        caption:
+          type: string
+
+    Review:
+      type: object
+      required: [id, providerId, reviewerName, rating, comment, createdAt]
+      properties:
+        id:
+          type: integer
+        providerId:
+          type: integer
+        reviewerName:
+          type: string
+        rating:
+          type: integer
+        comment:
+          type: string
+        createdAt:
+          type: string
+
+    ReviewInput:
+      type: object
+      required: [reviewerName, rating, comment]
+      properties:
+        reviewerName:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+
+    GenerateDescriptionRequest:
+      type: object
+      required: [trade, yearsExperience, specialties]
+      properties:
+        trade:
+          type: string
+        yearsExperience:
+          type: integer
+        specialties:
+          type: array
+          items:
+            type: string
+        tone:
+          type: string
+
+    GeneratedDescription:
+      type: object
+      required: [description]
+      properties:
+        description:
+          type: string
+
+    DirectoryStats:
+      type: object
+      required: [totalProviders, totalReviews, topTrade, recentProviders]
+      properties:
+        totalProviders:
+          type: integer
+        totalReviews:
+          type: integer
+        topTrade:
+          type: string
+        recentProviders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Provider"
+
+    TradeSummary:
+      type: object
+      required: [trade, count]
+      properties:
+        trade:
+          type: string
+        count:
+          type: integer
