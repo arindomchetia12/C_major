@@ -4,25 +4,26 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 
-const queryClient = new QueryClient();
+import Layout from "@/components/layout";
+import Home from "@/pages/home";
+import ProvidersList from "@/pages/providers";
+import ProviderProfile from "@/pages/provider-profile";
+import ProviderForm from "@/pages/provider-form";
 
-function Home() {
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900">Replit Agent is building...</h1>
-        <p className="mt-2 text-sm text-gray-600">Your app will appear here once it's ready.</p>
-      </div>
-    </div>
-  );
-}
+const queryClient = new QueryClient();
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route component={NotFound} />
-    </Switch>
+    <Layout>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/providers" component={ProvidersList} />
+        <Route path="/providers/new" component={ProviderForm} />
+        <Route path="/providers/:id" component={ProviderProfile} />
+        <Route path="/providers/:id/edit" component={ProviderForm} />
+        <Route component={NotFound} />
+      </Switch>
+    </Layout>
   );
 }
 
