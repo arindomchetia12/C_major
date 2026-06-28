@@ -5,6 +5,7 @@ import portfolioRouter from "./portfolio";
 import reviewsRouter from "./reviews";
 import aiRouter from "./ai";
 import statsRouter from "./stats";
+import bookRouter from "./book";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(portfolioRouter);
 router.use(reviewsRouter);
 router.use(aiRouter);
 router.use(statsRouter);
+router.use(bookRouter);
 
 export default router;

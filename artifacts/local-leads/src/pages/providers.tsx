@@ -5,7 +5,17 @@ import { ProviderCard } from "@/components/shared";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, SlidersHorizontal, Loader2 } from "lucide-react";
+import { Search, MapPin, SlidersHorizontal, Loader2, Wrench, Zap, Wind, Hammer, HardHat, Home } from "lucide-react";
+
+const TRADE_CATEGORIES = [
+  { label: "All Trades",         value: "all",               icon: <HardHat className="w-4 h-4" /> },
+  { label: "Plumber",            value: "Plumber",            icon: <Wrench className="w-4 h-4" /> },
+  { label: "Electrician",        value: "Electrician",        icon: <Zap className="w-4 h-4" /> },
+  { label: "HVAC Technician",    value: "HVAC Technician",    icon: <Wind className="w-4 h-4" /> },
+  { label: "Carpenter",          value: "Carpenter",          icon: <Hammer className="w-4 h-4" /> },
+  { label: "Roofer",             value: "Roofer",             icon: <Home className="w-4 h-4" /> },
+  { label: "General Contractor", value: "General Contractor", icon: <HardHat className="w-4 h-4" /> },
+];
 
 export default function ProvidersList() {
   const [location, setLocation] = useLocation();
@@ -44,7 +54,7 @@ export default function ProvidersList() {
         </Button>
       </div>
 
-      <div className="bg-card border rounded-xl p-4 mb-10 shadow-sm">
+      <div className="bg-card border rounded-xl p-4 mb-6 shadow-sm">
         <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -66,7 +76,10 @@ export default function ProvidersList() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Any Trade</SelectItem>
-                {trades?.map(t => (
+                {(trades && trades.length > 0
+                  ? trades
+                  : TRADE_CATEGORIES.slice(1).map(c => ({ trade: c.value, count: 0 }))
+                ).map(t => (
                   <SelectItem key={t.trade} value={t.trade}>{t.trade}</SelectItem>
                 ))}
               </SelectContent>
@@ -87,6 +100,24 @@ export default function ProvidersList() {
             Filter
           </Button>
         </form>
+      </div>
+
+      {/* Category Pill Buttons */}
+      <div className="flex flex-wrap gap-2 mb-8">
+        {TRADE_CATEGORIES.map(cat => (
+          <button
+            key={cat.value}
+            onClick={() => setTrade(cat.value)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-200
+              ${trade === cat.value
+                ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
+                : "bg-card text-foreground border-border hover:border-primary hover:text-primary hover:shadow-sm"
+              }`}
+          >
+            {cat.icon}
+            {cat.label}
+          </button>
+        ))}
       </div>
 
       {isLoading ? (
