@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { db, providersTable, reviewsTable } from "@workspace/db";
 import { count, avg, desc, sql } from "drizzle-orm";
-import { capitalizeTrade } from "../utils/capitalize.js";
 
 const router = Router();
 
@@ -31,7 +30,6 @@ router.get("/stats", async (_req, res) => {
         .where(sql`${reviewsTable.providerId} = ${p.id}`);
       return {
         ...p,
-        trade: capitalizeTrade(p.trade),
         createdAt: p.createdAt.toISOString(),
         averageRating: Number(stats[0]?.avg ?? 0),
         reviewCount: Number(stats[0]?.count ?? 0),
@@ -42,7 +40,7 @@ router.get("/stats", async (_req, res) => {
   return res.json({
     totalProviders: Number(providerCount?.count ?? 0),
     totalReviews: Number(reviewCount?.count ?? 0),
-    topTrade: tradeCounts[0]?.trade ? capitalizeTrade(tradeCounts[0].trade) : "Plumber",
+    topTrade: tradeCounts[0]?.trade ?? "Plumber",
     recentProviders: recentWithStats,
   });
 });
@@ -55,7 +53,7 @@ router.get("/trades", async (_req, res) => {
     .groupBy(providersTable.trade)
     .orderBy(desc(count()));
 
-  return res.json(trades.map((t) => ({ trade: capitalizeTrade(t.trade), count: Number(t.count) })));
+  return res.json(trades.map((t) => ({ trade: t.trade, count: Number(t.count) })));
 });
 
 export default router;
