@@ -97,7 +97,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <img src="/c-major-logo.jpg" alt="C major Logo" className="h-6 w-6 rounded-full object-cover shadow-sm" />
             <span>C major</span>
           </div>
-          <p className="mb-6">The no-nonsense directory for hard-working tradespeople.</p>
 
           <p className="mt-2">&copy; {new Date().getFullYear()} C major. All rights reserved.</p>
         </div>
