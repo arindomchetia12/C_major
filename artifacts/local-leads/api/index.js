@@ -1,6 +1,5 @@
-const appPromise = import("../../api-server/dist/app.mjs");
+import app from "../../api-server/dist/app.mjs";
 
-module.exports = async (req, res) => {
-  const { default: app } = await appPromise;
+export default function handler(req, res) {
   return app(req, res);
-};
+}
