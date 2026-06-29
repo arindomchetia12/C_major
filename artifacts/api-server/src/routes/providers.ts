@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { db, providersTable, portfolioTable, reviewsTable } from "@workspace/db";
 import { eq, ilike, avg, count, desc, or, sql } from "drizzle-orm";
+import { capitalizeTrade } from "../utils/capitalize.js";
 import {
   ListProvidersQueryParams,
   CreateProviderBody,
@@ -23,6 +24,7 @@ async function getProviderWithStats(id: number) {
 
   return {
     ...provider[0],
+    trade: capitalizeTrade(provider[0].trade),
     createdAt: provider[0].createdAt.toISOString(),
     averageRating: Number(reviewStats[0]?.avg ?? 0),
     reviewCount: Number(reviewStats[0]?.count ?? 0),
@@ -63,6 +65,7 @@ router.get("/providers", async (req, res) => {
         .where(eq(reviewsTable.providerId, p.id));
       return {
         ...p,
+        trade: capitalizeTrade(p.trade),
         createdAt: p.createdAt.toISOString(),
         averageRating: Number(stats[0]?.avg ?? 0),
         reviewCount: Number(stats[0]?.count ?? 0),
@@ -81,6 +84,7 @@ router.post("/providers", async (req, res) => {
   const [provider] = await db.insert(providersTable).values(parsed.data).returning();
   return res.status(201).json({
     ...provider,
+    trade: capitalizeTrade(provider.trade),
     createdAt: provider.createdAt.toISOString(),
     averageRating: 0,
     reviewCount: 0,
@@ -126,6 +130,7 @@ router.patch("/providers/:id", async (req, res) => {
 
   return res.json({
     ...updated,
+    trade: capitalizeTrade(updated.trade),
     createdAt: updated.createdAt.toISOString(),
     averageRating: Number(stats[0]?.avg ?? 0),
     reviewCount: Number(stats[0]?.count ?? 0),
