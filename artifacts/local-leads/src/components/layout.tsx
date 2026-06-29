@@ -17,9 +17,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-primary font-display font-bold text-xl tracking-tight">
-            <Hammer className="h-6 w-6 text-accent" />
-            <span>Local Leads</span>
+          <Link href="/" className="flex items-center gap-2.5 text-primary font-display font-bold text-xl tracking-tight">
+            <img src="/c-major-logo.jpg" alt="C major Logo" className="h-8 w-8 rounded-full object-cover shadow-sm" />
+            <span>C major</span>
           </Link>
 
           {/* Desktop nav */}
@@ -93,13 +93,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <footer className="border-t bg-muted/40 py-12">
         <div className="container mx-auto px-4 md:px-6 text-center text-sm text-muted-foreground">
-          <div className="flex justify-center items-center gap-2 mb-3 text-primary font-display font-bold text-lg">
-            <Hammer className="h-5 w-5 text-accent" />
-            <span>Local Leads</span>
+          <div className="flex justify-center items-center gap-2.5 mb-3 text-primary font-display font-bold text-lg">
+            <img src="/c-major-logo.jpg" alt="C major Logo" className="h-6 w-6 rounded-full object-cover shadow-sm" />
+            <span>C major</span>
           </div>
           <p className="mb-6">The no-nonsense directory for hard-working tradespeople.</p>
 
-          <p className="mt-2">&copy; {new Date().getFullYear()} Local Leads. All rights reserved.</p>
+          <p className="mt-2">&copy; {new Date().getFullYear()} C major. All rights reserved.</p>
         </div>
       </footer>
     </div>
