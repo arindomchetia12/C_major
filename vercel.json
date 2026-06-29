@@ -1,0 +1,17 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.mjs"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/artifacts/local-leads/dist/public/assets/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/artifacts/local-leads/dist/public/index.html"
+    }
+  ]
+}
