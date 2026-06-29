@@ -1,4 +1,4 @@
-# 🗄️ AWS Aurora PostgreSQL — Database Architecture & Integration Guide
+ # 🗄️ AWS Aurora PostgreSQL — Database Architecture & Integration Guide
 
 This document provides a complete technical explanation of how **Amazon Aurora PostgreSQL (AWS RDS)** powers the **C major** platform, how data is queried via Drizzle ORM, and how network routing works.
 
