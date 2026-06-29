@@ -2,15 +2,15 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "destination": "/api/index.mjs"
     },
     {
-      "source": "/assets/(.*)",
-      "destination": "/artifacts/local-leads/dist/public/assets/$1"
+      "source": "/assets/:path*",
+      "destination": "/artifacts/local-leads/dist/public/assets/:path*"
     },
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "destination": "/artifacts/local-leads/dist/public/index.html"
     }
   ]
